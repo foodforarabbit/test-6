@@ -20,7 +20,8 @@ import {
   AddUserAction,
   DeleteUserAction,
   UserFactory,
-  TodoFactory
+  TodoFactory,
+  CompleteSubTodoAction
 } from '../actions/default';
 
 
@@ -92,7 +93,7 @@ export const reducer = (state: Record<IReducerState> = INITIAL_STATE, action: IA
       } = payload;
 
       if (user.get('name') === '') {
-        alert('name')
+        // alert('name')
         return state;
       }
 
@@ -133,7 +134,7 @@ export const reducer = (state: Record<IReducerState> = INITIAL_STATE, action: IA
       } = payload;
 
       if (todo.get('title') === "") {
-        alert('title');
+        // alert('title');
         return state;
       } 
 
@@ -161,7 +162,7 @@ export const reducer = (state: Record<IReducerState> = INITIAL_STATE, action: IA
       } = payload;
       
       if (subTodo.get('title') === '') {
-        alert('no title')
+        // alert('no title')
         return state;
       }
 
@@ -194,6 +195,25 @@ export const reducer = (state: Record<IReducerState> = INITIAL_STATE, action: IA
         ['todos', id],
         todo.withMutations((mutableTodo) => {
           mutableTodo.set('complete', !complete)
+        }),
+      );
+      })
+    }
+
+    case DefaultActionTypes.COMPLETE_SUBTODO: {
+      const {
+        payload,
+      } = action as CompleteSubTodoAction;
+      const {
+        subtodo,
+        complete
+      } = payload;
+      let id = subtodo.get('id')
+      return state.withMutations((mutableState) => {
+        mutableState.setIn( 
+        ['subTodos', id],
+        subtodo.withMutations((mutableSubTodo) => {
+          mutableSubTodo.set('complete', !complete)
         }),
       );
       })

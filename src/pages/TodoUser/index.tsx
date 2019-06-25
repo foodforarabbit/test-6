@@ -17,13 +17,7 @@ import {
   Typography,
   Button,
   TextField,
-  Checkbox
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
 import {
   AddTodoAction,
   DeleteTodoAction,
@@ -32,7 +26,6 @@ import {
   ITodo,
   ISubTodo,
   TodoFactory,
-  SubTodoFactory,
   IUser,
 } from '../../actions/default';
 import {
@@ -40,6 +33,7 @@ import {
   makeSelectUser,
 } from '../../selectors/default';
 import { createStructuredSelector } from 'reselect';
+import TodoCard from '../../components/TodoCard';
 
 interface ITodoComponentProps {
   match: IMatch,
@@ -63,22 +57,10 @@ const deleteTodo = (todo: Record<ITodo>) => new DeleteTodoAction({ todo });
 const completedTodo = (todo: Record<ITodo>, complete: boolean) => new CompletedTodoAction({ todo, complete });
 const addSubTodo = (todoId: number, subTodo: Record<ISubTodo>) => new AddSubTodoAction({ todoId, subTodo });
 
-const useStyles = makeStyles({
-  card: {
-    maxWidth: 345,
-  },
-});
-
 const Todo: React.FC<ITodoProps> = (props) => {
-  const classes = useStyles();
   const [textInput, setTextInput] = useState('');
-  const [toggleAddInput, setToggleAddInput] = useState(false);
-  const [currentTodoId, setCurrentTodoId] = useState(-1);
   const {
     addTodo,
-    deleteTodo,
-    completedTodo,
-    addSubTodo,
     userId,
     todosForUser,
     user
@@ -125,7 +107,6 @@ const Todo: React.FC<ITodoProps> = (props) => {
         direction='column'
         wrap='nowrap'
       >
-      { !toggleAddInput ?
         <Grid
           item={true}
           container={true}
@@ -162,93 +143,18 @@ const Todo: React.FC<ITodoProps> = (props) => {
               Input Todo
             </Button>
           </Grid>
-  
-        </Grid>
-      :  
-        <Grid
-          item={true}
-          container={true}
-          alignItems='center'
-        >
-          <Grid
-            item={true}
-          >
-            <TextField
-              label='title'
-              value={textInput}
-              onChange={(e) => {
-                setTextInput(e.target.value);
-              }}
-            />
-          </Grid>
-          <Grid
-            item={true}
-          >
-            <Button
-              variant='outlined'
-              onClick={
-                () => {
-                  addSubTodo(
-                    currentTodoId,
-                    SubTodoFactory({
-                      title: textInput,
-                      todoId: currentTodoId
-                    }),
-                  );
-                  setTextInput('');
-                }
-              }
-            >
-              Input Sub Task
-            </Button>
-          </Grid>
-          
-        </Grid>}
-        {
-          todosForUser.map((todo, index) => {
-            let complete = todo.get('complete')
-            return (
-              <Card className={classes.card} key={index}>
-                <CardActionArea>
-                <Checkbox
-                  checked={complete}
-                  value={complete}
-                  onChange={() => completedTodo(todo, complete)}
-                  inputProps={{
-                    'aria-label': 'primary checkbox',
-                  }}
-                />
-                  <CardContent>
 
-                    <Typography variant="body2" color="textSecondary" component="p">
-                    {todo.get('title')}
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-                <CardActions>
-                  <Button 
-                    size="small" 
-                    color="primary" 
-                    //@ts-ignore   
-                    onClick={() => deleteTodo(todo)}
-                  >
-                    Delete
-                  </Button>
-                  <Button 
-                    size="small" 
-                    color="primary" 
-                    onClick={() => {
-                      setToggleAddInput(!toggleAddInput);
-                      setCurrentTodoId(todo.get('id'));
-                    }}
-                  >
-                    {!toggleAddInput ? "Add SubTodo" : "Add New Task" }
-                  </Button>
-                </CardActions>
-              </Card>
-            )
-          })
-        }
+        </Grid>
+        <Grid
+          container={true}
+          item={true}
+        >
+          {
+            todosForUser.map((todo, index) => {
+              return <TodoCard todo={todo} key={index} />
+            })
+          }
+        </Grid>
       </Grid>
     </Grid>
   );

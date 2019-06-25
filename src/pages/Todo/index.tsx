@@ -6,7 +6,7 @@ import {
   Map,
 } from 'immutable';
 import { connect } from 'react-redux';
-import { Grid, Typography, Button } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import { createStructuredSelector } from 'reselect';
 import { makeSelectTodos } from '../../selectors/default';
 import { ITodo } from '../../actions/default';

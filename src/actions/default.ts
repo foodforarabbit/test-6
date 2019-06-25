@@ -14,6 +14,7 @@ export enum DefaultActionTypes {
   ADD_SUB_TODO = 'ADD_SUB_TODO',
   DELETE_TODO = 'DELETE_TODO',
   COMPLETE_TODO = 'COMPLETE_TODO',
+  COMPLETE_SUBTODO = 'COMPLETE_SUBTODO',
   ADD_CAT_FACT = 'ADD_CAT_FACT',
 }
 
@@ -89,6 +90,16 @@ export class CompletedTodoAction implements IAction {
   constructor(
     public payload: {
       todo: Record<ITodo>,
+      complete: boolean
+    }
+  ) {}
+}
+
+export class CompleteSubTodoAction implements IAction {
+  public readonly type = DefaultActionTypes.COMPLETE_SUBTODO;
+  constructor(
+    public payload: {
+      subtodo: Record<ISubTodo>,
       complete: boolean
     }
   ) {}
